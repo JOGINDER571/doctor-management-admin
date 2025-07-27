@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { useAdminContext } from "../context/AdminContext";
 import { useNavigate } from "react-router-dom";
 import { AdminService } from "../services/AdminService";
+import useLoading from "../hooks/useLoading";
+import Loader from "../components/Loader";
+import { toast } from "react-toastify";
 interface FormValues {
   email: string;
   password: string;
@@ -13,14 +16,14 @@ interface FormErrors {
 }
 
 const Login: React.FC = () => {
-  const { setAtoken} = useAdminContext();
+  const { setAtoken } = useAdminContext();
   const navigate = useNavigate();
   const [formValues, setFormValues] = useState<FormValues>({
     email: "",
     password: "",
   });
+  const { loading, showLoader, hideLoader } = useLoading();
   const [formErrors, setFormErrors] = useState<FormErrors>({});
-  const [submitted, setSubmitted] = useState<boolean>(false);
   const [state, setState] = useState<string>("admin");
 
   const validate = (): FormErrors => {
@@ -55,21 +58,26 @@ const Login: React.FC = () => {
 
     if (Object.keys(errors).length === 0) {
       try {
+        showLoader();
         const res = await AdminService.login(formValues);
         if (res?.data.success) {
           setAtoken(res.data.data[0]);
           localStorage.setItem("atoken", res.data.data[0]);
           navigate("/");
         }
-        setSubmitted(true);
-      } catch (error) {
-        setSubmitted(false);
+      } catch (error: any) {
+        toast.error(
+          error.response?.data?.message || "Login failed. Please try again."
+        );
+      } finally {
+        hideLoader();
       }
     }
   };
 
   return (
     <div className="flex items-center justify-center p-4 h-screen">
+      {loading && <Loader />}
       <form
         onSubmit={handleSubmit}
         className="bg-white rounded-lg shadow-md w-full max-w-sm p-6"
@@ -139,12 +147,6 @@ const Login: React.FC = () => {
             >
               Click here
             </span>
-          </p>
-        )}
-
-        {submitted && (
-          <p className="text-green-600 text-center mt-4">
-            Account created successfully!
           </p>
         )}
       </form>
