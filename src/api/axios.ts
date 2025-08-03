@@ -19,7 +19,8 @@ api.interceptors.response.use(
       err?.response?.data?.message === `Unauthorized`
     ) {
       localStorage.removeItem("atoken");
-      window.location.href = `/admin/login`;
+      localStorage.removeItem("dtoken");
+      window.location.href = `/login`;
     }
 
     console.error(err, err?.response);

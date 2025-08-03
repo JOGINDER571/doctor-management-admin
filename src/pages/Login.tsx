@@ -5,6 +5,8 @@ import { AdminService } from "../services/AdminService";
 import useLoading from "../hooks/useLoading";
 import Loader from "../components/Loader";
 import { toast } from "react-toastify";
+import { DoctorService } from "../services/DoctorServices";
+import { useDoctorContext } from "../context/DoctorContext";
 interface FormValues {
   email: string;
   password: string;
@@ -17,6 +19,7 @@ interface FormErrors {
 
 const Login: React.FC = () => {
   const { setAtoken } = useAdminContext();
+  const { setDtoken } = useDoctorContext();
   const navigate = useNavigate();
   const [formValues, setFormValues] = useState<FormValues>({
     email: "",
@@ -59,11 +62,21 @@ const Login: React.FC = () => {
     if (Object.keys(errors).length === 0) {
       try {
         showLoader();
-        const res = await AdminService.login(formValues);
-        if (res?.data.success) {
-          setAtoken(res.data.data[0]);
-          localStorage.setItem("atoken", res.data.data[0]);
-          navigate("/");
+        let res;
+        if (state === "admin") {
+          res = await AdminService.login(formValues);
+          if (res?.data.success) {
+            setAtoken(res.data.data[0]);
+            localStorage.setItem("atoken", res.data.data[0]);
+            navigate("/admin-dashboard");
+          }
+        } else {
+          res = await DoctorService.login(formValues);
+          if (res?.data.success) {
+            setDtoken(res.data.data[0]);
+            localStorage.setItem("dtoken", res.data.data[0]);
+            navigate("/dashboard");
+          }
         }
       } catch (error: any) {
         toast.error(

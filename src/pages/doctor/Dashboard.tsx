@@ -1,25 +1,19 @@
 import { useState, useEffect } from "react";
-import { useAdminContext } from "../../context/AdminContext";
-import { AdminService } from "../../services/AdminService";
 import useLoading from "../../hooks/useLoading";
 import { toast } from "react-toastify";
 import Loader from "../../components/Loader";
-
-
-interface Appointment {
-  name: string;
-  slotDate: string;
-  image: string;
-}
+import { useDoctorContext } from "../../context/DoctorContext";
+import { DoctorService } from "../../services/DoctorServices";
 
 interface DashboardData {
-  doctors: number;
-  patient: number;
-  totalAppointments: Appointment[];
+  totalEarning: number;
+  patients: number;
+  appointments: number;
+  latestAppointment: any;
 }
 
-const Dashboard = () => {
-  const { atoken } = useAdminContext();
+const DoctorDashboard = () => {
+  const { dtoken } = useDoctorContext();
   const [dashboardData, setDashboardData] = useState<DashboardData>();
   const { loading, showLoader, hideLoader } = useLoading();
 
@@ -30,7 +24,7 @@ const Dashboard = () => {
   const fectchData = async () => {
     try {
       showLoader();
-      const response = await AdminService.dashboard(atoken);
+      const response = await DoctorService.dashboard(dtoken);
       setDashboardData(response.data.data);
     } catch (error: any) {
       toast.error(
@@ -42,13 +36,13 @@ const Dashboard = () => {
   };
 
   const stats = [
-    { label: "Doctors", count: dashboardData?.doctors ?? 0, icon: "👨‍⚕️" },
+    { label: "Patients", count: dashboardData?.patients ?? 0, icon: "🧑‍⚕️" },
     {
       label: "Appointments",
-      count: dashboardData?.totalAppointments?.length ?? 0,
+      count: dashboardData?.appointments ?? 0,
       icon: "📅",
     },
-    { label: "Patients", count: dashboardData?.patient ?? 0, icon: "🧑‍🤝‍🧑" },
+    { label: "Earning", count: dashboardData?.totalEarning ?? 0, icon: "💰"  },
   ];
 
   return (
@@ -79,19 +73,19 @@ const Dashboard = () => {
         </div>
 
         <ul>
-          {dashboardData?.totalAppointments?.map((appt, idx) => (
+          {dashboardData?.latestAppointment?.map((appt: any, idx: number) => (
             <li
               key={idx}
               className="px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition"
             >
               <div className="flex items-center gap-3">
                 <img
-                  src={appt.image}
-                  alt={appt.name}
+                  src={appt?.userData?.image}
+                  alt={appt?.name}
                   className="w-10 h-10 rounded-full object-cover"
                 />
                 <div>
-                  <p className="font-medium text-gray-800">{appt.name}</p>
+                  <p className="font-medium text-gray-800">{appt?.userData.name}</p>
                   <p className="text-sm text-gray-500">{appt.slotDate}</p>
                 </div>
               </div>
@@ -106,4 +100,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default DoctorDashboard;

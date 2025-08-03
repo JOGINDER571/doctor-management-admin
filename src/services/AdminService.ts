@@ -9,7 +9,7 @@ export class AdminService {
     } catch (error) {
       console.log(error);
       throw error;
-    }
+    } 
   }
 
   public static async addDoctor(payload: any, atoken: string) {

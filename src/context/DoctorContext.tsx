@@ -1,7 +1,14 @@
-import React, { createContext, useContext } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  type Dispatch,
+} from "react";
 
 interface DoctorContextType {
   //   currencySymbol: string;
+  dtoken: string;
+  setDtoken: Dispatch<React.SetStateAction<string>>;
 }
 
 const DoctorContext = createContext<DoctorContextType | undefined>(undefined);
@@ -9,7 +16,13 @@ const DoctorContext = createContext<DoctorContextType | undefined>(undefined);
 const DoctorContextProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const value = {};
+  const [dtoken, setDtoken] = useState<string>(
+    localStorage.getItem("dtoken") ?? ""
+  );
+  const value = {
+    dtoken,
+    setDtoken,
+  };
   return (
     <DoctorContext.Provider value={value}>{children}</DoctorContext.Provider>
   );
