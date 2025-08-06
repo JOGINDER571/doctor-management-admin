@@ -21,19 +21,22 @@ const App = () => {
       <div className="flex items-start">
         <Sidebar />
         <Routes>
-          // Admin Routes
+          {/* Admin Routes */}
           <Route path="/admin-dashboard" element={<Dashboard />} />
           <Route path="/all-appointments" element={<Appointments />} />
           {atoken && <Route path="/add-doctor" element={<AddDoctor />} />}
-          <Route path="/doctor-list" element={<DoctorList />} />
-          // Doctor Routes
+          {atoken && <Route path="/doctor-list" element={<DoctorList />} />}
+          {/* Doctor Routes */}
           <Route path="/dashboard" element={<DoctorDashboard />} />
           <Route path="/appointments" element={<DoctorAppointments />} />
         </Routes>
       </div>
     </div>
   ) : (
-    <Login />
+    <div>
+      <ToastContainer />
+      <Login />
+    </div>
   );
 };
 

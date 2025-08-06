@@ -31,7 +31,7 @@ const Sidebar = () => {
     <div className="min-h-screen border-r border-gray-200">
       <ul className="text-[#515151] mt-5">
         {data.map((item, index) => {
-          if (item.to === "add-doctor" && dtoken) {
+          if ((item.to === "add-doctor" || item.to === "doctor-list")  && dtoken) {
             return;
           }
           return (

@@ -63,4 +63,19 @@ export class DoctorService {
       throw error;
     }
   }
+
+  public static async completeAppointment(dtoken: string, appointmentId: number) {
+    try {
+      const response = await Axios.put(
+        baseURL + "/complete-appointment",
+        { appointmentId },
+        {
+          headers: { dtoken },
+        }
+      );
+      return response;
+    } catch (error: any) {
+      throw error;
+    }
+  }
 }

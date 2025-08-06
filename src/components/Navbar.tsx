@@ -18,7 +18,7 @@ const Navbar: React.FC = () => {
 
   return (
     <div className="flex justify-between items-center py-4 mb-1 border-b border-b-gray-200 px-2 sm:px-5">
-      <NavLink className={`flex items-center gap-3`} to={"/"}>
+      <NavLink className={`flex items-center gap-3`} to={`/${atoken ? "admin-dashboard" : "dashboard"}`}>
         <img className="w-44 cursor-pointer" src={assets.admin_logo} alt="" />
         <p className="text-sm px-2.5 py-0.5 border border-gray-400 rounded-full">
           {atoken ? "Admin" : "Doctor"}

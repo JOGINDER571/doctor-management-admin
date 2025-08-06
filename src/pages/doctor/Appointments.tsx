@@ -72,6 +72,24 @@ const DoctorAppointments: React.FC = () => {
     }
   };
 
+  const handleCompleteAppointment = async (id: number) => {
+    try {
+      showLoader();
+      const response = await DoctorService.completeAppointment(dtoken, id);
+      if (response.data.success) {
+        // fetchDoctors();
+        toast.success(
+          response.data.message || "Appointment cancelled successfully"
+        );
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Something went wrong");
+    } finally {
+      hideLoader();
+      fectchData();
+    }
+  };
+
   return (
     <div className="p-4 sm:p-6 md:p-8 w-full">
       {loading && <Loader />}
@@ -97,7 +115,9 @@ const DoctorAppointments: React.FC = () => {
               >
                 <td className="px-4 py-4">{index + 1}</td>
                 <td className="px-4 py-4">{appt?.userData.name}</td>
-                <td className="px-4 py-4">{calculateAge(appt?.userData.dob)}</td>
+                <td className="px-4 py-4">
+                  {calculateAge(appt?.userData.dob)}
+                </td>
                 <td className="px-4 py-4">
                   {appt.slotDate} | {appt.slotTime}
                 </td>
@@ -105,13 +125,23 @@ const DoctorAppointments: React.FC = () => {
                 <td className="px-4 py-4">
                   {appt.cancelled ? (
                     <span className="text-red-500">Cancelled</span>
-                  ) : (
-                    <button
-                      onClick={() => handleCancelAppointment(appt.id)}
-                      className="text-red-500 bg-red-100 hover:text-red-700 rounded-full p-1.5 transition cursor-pointer"
-                    >
-                      ❌
-                    </button>
+                  ) : appt.isCompleted ? <><span className="text-green-500">Complete</span></> : (
+                    <>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleCancelAppointment(appt.id)}
+                          className="text-red-500 bg-red-100 hover:text-red-700 rounded-full p-1.5 transition cursor-pointer"
+                        >
+                          ❌
+                        </button>
+                        <button
+                          onClick={() => handleCompleteAppointment(appt.id)}
+                          className="text-red-500 bg-red-100 hover:text-red-700 rounded-full p-1.5 transition cursor-pointer"
+                        >
+                          ✔️
+                        </button>
+                      </div>
+                    </>
                   )}
                 </td>
               </tr>

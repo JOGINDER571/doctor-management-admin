@@ -79,6 +79,7 @@ const Login: React.FC = () => {
           }
         }
       } catch (error: any) {
+        console.log("Login error:", error);
         toast.error(
           error.response?.data?.message || "Login failed. Please try again."
         );

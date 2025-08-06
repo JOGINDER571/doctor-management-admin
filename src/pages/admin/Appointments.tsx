@@ -111,6 +111,10 @@ const Appointments: React.FC = () => {
                 <td className="px-4 py-4">
                   {appt.cancelled ? (
                     <span className="text-red-500">Cancelled</span>
+                  ) : appt.isCompleted ? (
+                    <>
+                      <span className="text-green-500">Complete</span>
+                    </>
                   ) : (
                     <button
                       onClick={() => handleCancelAppointment(appt.id)}
